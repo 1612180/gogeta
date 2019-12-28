@@ -1,0 +1,21 @@
+@startuml
+
+title Gogeta Processor
+
+participant Queue as queue
+participant "Gogeta Processor" as processor
+participant Cache as cache
+
+queue -> processor: dequeue task
+
+processor -> cache: save task with processing status
+
+processor -> queue: enqueue task with AI message
+
+queue -> processor: dequeue done task with AI message
+
+processor -> cache: update task with successful / failed status
+
+processor -> queue: enqueu done task
+
+@enduml
