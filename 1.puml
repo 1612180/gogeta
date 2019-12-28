@@ -4,13 +4,20 @@ title Gogeta Architecture
 
 [Gogeta API] as api
 [Cache] as cache
-[Queue] as queue
+[Gogeta Queue] as gogeta_queue
 [Gogeta Processor] as processor
+[AI Queue] as ai_queue
+[AI Service] as ai_service
+[Hosting Service] as hosting_service
 
-api - queue
+api - gogeta_queue
 api --> cache
 
-queue - processor
+gogeta_queue - processor
 processor --> cache
+processor - ai_queue 
+
+ai_queue - ai_service
+ai_service --> hosting_service
 
 @enduml
