@@ -1,0 +1,16 @@
+@startuml
+
+title Gogeta Architecture
+
+[Gogeta API] as api
+[Cache] as cache
+[Queue] as queue
+[Gogeta Processor] as processor
+
+api - queue
+api --> cache
+
+queue - processor
+processor --> cache
+
+@enduml
