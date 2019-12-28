@@ -1,0 +1,25 @@
+@startuml
+
+title AI Service
+
+participant "AI Queue" as ai_queue
+participant "AI Service" as ai_service
+participant "Hosting Service" as hosting_service
+
+ai_queue -> ai_service: dequeue AI task
+
+ai_service -> hosting_service: download data by URL
+activate hosting_service
+
+return data
+
+ai_service -> ai_service: process data
+
+ai_service -> hosting_service: upload processed data
+activate hosting_service
+
+return URL
+
+ai_service -> ai_queue: enqueue done AI task (include URL)
+
+@enduml
