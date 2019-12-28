@@ -2,20 +2,60 @@
 
 title Gogeta Processor
 
-participant Queue as queue
+participant "Gogeta Queue" as gogeta_queue
+participant "AI Queue" as ai_queue
+participant "Processor Queue" as processor_queue
 participant "Gogeta Processor" as processor
 participant Cache as cache
 
-queue -> processor: dequeue task
+== Receive task ==
 
-processor -> cache: save task with processing status
+gogeta_queue -> processor: dequeue task
 
-processor -> queue: enqueue task with AI message
+processor -> cache: save task with processing status and max retry
 
-queue -> processor: dequeue done task with AI message
+processor -> ai_queue: enqueue AI task
+
+processor -> processor_queue: enqueue check status task
+
+== Update task == 
+
+ai_queue -> processor: dequeue done AI task
+
+processor -> cache: get status task
+activate cache
+
+return status task
+
+alt processing
 
 processor -> cache: update task with successful / failed status
 
-processor -> queue: enqueu done task
+end
+
+processor -> gogeta_queue: enqueue done task
+
+== Check status task ==
+
+processor_queue -> processor: dequeue check status task
+
+processor -> cache: get status task
+activate cache
+
+return status task
+
+alt processing
+
+alt retry counter < max retry
+
+processor -> cache: increase retry counter
+
+processor -> gogeta_queue: enqueue check status task
+
+else retry counter >= max retry
+
+processor -> cache: update task with failed status
+
+end
 
 @enduml
