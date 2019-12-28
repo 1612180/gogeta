@@ -1,0 +1,21 @@
+participant Client
+participant Gogeta_Api
+participant Cache
+participant Queue
+participant AIService
+
+@startuml
+Client -> Gogeta_Api: send requestAi
+Gogeta_Api --> Gogeta_Api: transfer info from Request to AITrans
+Gogeta_Api --> Gogeta_Api: validate AITrans
+Gogeta_Api --> Cache: save AITrans to cache
+Gogeta_Api --> Queue: send AiTrans to queue \n to send message to AI service
+opt
+AIService -> Queue: send message result to queue
+Queue -> Queue: Process message and transfer info to TransAi
+Queue -> Cache: update AITrans status in cache
+end
+Gogeta_Api --> Cache: get status from cache
+Gogeta_Api --> Client: return response to client
+
+@enduml
