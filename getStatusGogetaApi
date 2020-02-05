@@ -6,7 +6,7 @@ participant AIService
 @startuml
 opt
 AIService -> Queue: send message result to queue
-Queue -> Queue: Process message and transfer info to TransAi
+Queue -> Queue: Process message and transfer info to TransAix
 Queue -> Cache: update AITrans status in cache
 end
 Client -> Gogeta_Api: get status process RequestAI
