@@ -2,12 +2,11 @@ package com.zalopay.gameplay.receptionist.model;
 
 import lombok.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @ToString
-public class RequestAI {
+public class RequestDetectEntity extends BaseRequest {
     private String url;
     private int type;
 }

@@ -1,26 +1,21 @@
 package com.zalopay.gameplay.receptionist.model;
 
-import com.zalopay.gameplay.receptionist.constant.TransStatusEnum;
+import com.zalopay.gameplay.receptionist.constant.DetectTransStatusEnum;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @AllArgsConstructor
 @Setter
 @Getter
 @ToString
-public class AiTrans {
-    private long transAiID;
+public class DetectTransEntity extends BaseEntity{
+    private long detectTransId;
     private String requestUrl;
     private String responseUrl;
-    private String message;
-    private int returnCode;
     private boolean isSavedToCache;
-    private TransStatusEnum transStatus;
+    private DetectTransStatusEnum transStatus;
 
-    public AiTrans(){
+    public DetectTransEntity(){
         isSavedToCache = false;
-        message = "";
-        returnCode=0;
         requestUrl="";
         responseUrl="";
         transStatus = null;

@@ -1,4 +1,6 @@
 package com.zalopay.gameplay.receptionist.model;
 
-public class BaseEntity {
+import java.io.Serializable;
+
+public class BaseEntity implements Serializable {
 }

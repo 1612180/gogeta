@@ -7,7 +7,6 @@ import lombok.*;
 @Setter
 @Getter
 @ToString
-public class BaseRespone {
-    private int returnCode;
-    private String returnMessage;
+public class BaseResponse {
+    protected int returnCode;
 }

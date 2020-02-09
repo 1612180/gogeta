@@ -1,7 +1,8 @@
 package com.zalopay.gameplay.receptionist.handler;
 
-import com.zalopay.gameplay.receptionist.model.RequestAI;
+import com.zalopay.gameplay.receptionist.model.RequestDetectEntity;
+import com.zalopay.gameplay.receptionist.model.ResponseDetectEntity;
 
 public interface DetectObject {
-    boolean detectObjectOnImage(RequestAI requestAI);
+    ResponseDetectEntity handleDetect(RequestDetectEntity requestDetectEntity);
 }

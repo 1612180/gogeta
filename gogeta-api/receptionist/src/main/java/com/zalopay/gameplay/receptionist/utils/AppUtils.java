@@ -1,12 +1,15 @@
 package com.zalopay.gameplay.receptionist.utils;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class AppUtils {
-    private static final AtomicLong LAST_TIME_MS = new AtomicLong();
+    private AtomicLong LAST_TIME_MS;
+
+    public AppUtils(){
+        LAST_TIME_MS =  new AtomicLong();
+    }
 
     public  long generateUniqueID() {
         long now = System.currentTimeMillis();
