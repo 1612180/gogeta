@@ -11,8 +11,10 @@ Gogeta_Api --> Gogeta_Api: validate AITrans
 Gogeta_Api --> Cache: save AITrans to cache
 Gogeta_Api --> Queue: send AiTrans to queue \n to send message to AI service
 opt
-AIService -> Queue: send message result to queue
-Queue -> Queue: Process message and transfer info to TransAi
+Queue -> AIService: send message process to queue
+AIService -> AIService: Process message
+
+AIService --> Queue:Return Result process
 Queue -> Cache: update AITrans status in cache
 end
 Gogeta_Api --> Cache: get status from cache
