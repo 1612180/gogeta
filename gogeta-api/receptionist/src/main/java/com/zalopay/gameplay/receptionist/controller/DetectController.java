@@ -1,7 +1,7 @@
 package com.zalopay.gameplay.receptionist.controller;
 
 import com.zalopay.gameplay.receptionist.config.QueueConfig;
-import com.zalopay.gameplay.receptionist.model.RequestAI;
+import com.zalopay.gameplay.receptionist.model.RequestDetectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ public class AIController {
     QueueConfig queueConfig;
 
     @PostMapping(path = "/yolo/images")
-    public ResponseEntity<Object> detectObjectInImage(@RequestBody RequestAI requestAI){
+    public ResponseEntity<Object> detectObjectInImage(@RequestBody RequestDetectEntity requestDetectEntity){
         System.out.println(queueConfig.getDetectObjectKafkaQueue());
-        return  new ResponseEntity<>(requestAI, HttpStatus.OK);
+        return  new ResponseEntity<>(requestDetectEntity, HttpStatus.OK);
     }
 }
