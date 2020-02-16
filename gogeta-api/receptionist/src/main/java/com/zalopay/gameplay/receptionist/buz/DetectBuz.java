@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.logging.Logger;
+
 
 @Component
 @Scope(value = "prototype")
@@ -29,6 +31,9 @@ public class DetectBuz {
     @Autowired
     QueueConfig queueConfig;
 
+    private static final Logger logger = Logger.getLogger(DetectBuz.class.getSimpleName());
+
+
     private DetectTransEntity trans;
 
     public DetectBuz(){
@@ -43,21 +48,31 @@ public class DetectBuz {
     }
 
     public void processDetect(LogDetectEntity logDetectEntity){
+        try {
+            if(!getInfoFromRequestToTrans(logDetectEntity, trans)){
+                trans.setTransStatus(DetectTransStatusEnum.UNAVAILABLE_VALUE_REQUEST_DETECT_OBJECT.getStatus());
+                saveTransToCache(trans);
+                return;
+            }
+            if(checkDuplicate(trans)){
+                trans.setTransStatus(DetectTransStatusEnum.TRANS_IS_DETECTED.getStatus());
+                return;
+            }
 
-        if(!getInfoFromRequestToTrans(logDetectEntity, trans)){
-            return;
-        }
-        if(checkDuplicate(trans)){
-            return;
-        }
+            trans.setTransStatus(DetectTransStatusEnum.PROCESSING.getStatus());
 
-        trans.setTransStatus(DetectTransStatusEnum.DETECT_OBJECT_PROCESSING);
-
-        if(!saveTransToCache(trans)){
-            return;
-        }
-        if(!processDetectObject(trans)){
-            return;
+            if(!saveTransToCache(trans)){
+                trans.setTransStatus(DetectTransStatusEnum.SAVE_TRANS_TO_CACHE_FAIL.getStatus());
+                return;
+            }
+            if(!processDetectObject(trans)){
+                trans.setTransStatus(DetectTransStatusEnum.SEND_MESSAGE_DETECT_OBJECT_QUEUE_FAIL.getStatus());
+                return;
+            }
+        }catch (Exception e){
+            logger.warning("Fail at detect buz %" + trans.getRequestUrl());
+            trans.setTransStatus(DetectTransStatusEnum.EXCEPTION.getStatus());
+            this.saveTransToCache(trans);
         }
     }
 
@@ -73,7 +88,7 @@ public class DetectBuz {
 
     public boolean checkDuplicate(DetectTransEntity trans){
         if(cacheClient.getTransFromCache(trans.getRequestUrl()) != null){
-            trans.setTransStatus(DetectTransStatusEnum.IS_DETECTED_THIS_OBJECT);
+            trans.setTransStatus(DetectTransStatusEnum.IS_DETECTED_THIS_OBJECT.getStatus());
             return true;
         }
         return false;

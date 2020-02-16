@@ -48,7 +48,6 @@ public class DetectObjectHandler extends BaseHandler implements DetectObject {
         if(!validateRequest(logDetectEntity)){
             return logDetectEntity.getResponseDetectEntity();
         }
-
         detectBuz.processDetect(logDetectEntity);
         getInfoFromTrans(logDetectEntity,trans);
         return logDetectEntity.getResponseDetectEntity();
@@ -58,7 +57,7 @@ public class DetectObjectHandler extends BaseHandler implements DetectObject {
     private void getInfoFromTrans(LogDetectEntity logDetectEntity, DetectTransEntity trans) {
         System.out.println(trans);
         logDetectEntity.getResponseDetectEntity().setTransId(trans.getDetectTransId());
-        logDetectEntity.getResponseDetectEntity().setReturnCode(trans.getTransStatus().getStatus());
+        logDetectEntity.getResponseDetectEntity().setReturnCode(trans.getTransStatus());
     }
 
     public boolean validateRequest(LogDetectEntity logDetectEntity){

@@ -12,12 +12,17 @@ public class DetectTransEntity extends BaseEntity{
     private String requestUrl;
     private String responseUrl;
     private boolean isSavedToCache;
-    private DetectTransStatusEnum transStatus;
+    private int transStatus;
 
     public DetectTransEntity(){
         isSavedToCache = false;
         requestUrl="";
         responseUrl="";
-        transStatus = null;
+        transStatus = 0;
+    }
+    public boolean isProcessing(){
+        if(transStatus != 0)
+            return false;
+        return true;
     }
 }

@@ -5,20 +5,19 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class AppUtils {
-    private AtomicLong LAST_TIME_MS;
+    private AtomicLong currentTime;
 
     public AppUtils(){
-        LAST_TIME_MS =  new AtomicLong();
+        currentTime =  new AtomicLong();
     }
 
-    public  long generateUniqueID() {
-        long now = System.currentTimeMillis();
-        while (true) {
-            long lastTime = LAST_TIME_MS.get();
-            if (lastTime >= now)
-                now = LAST_TIME_MS.incrementAndGet();
-            if (LAST_TIME_MS.compareAndSet(lastTime, now))
-                return now;
-        }
+    public long generateUniqueID() {
+        long prev;
+        long next = System.currentTimeMillis();
+        do {
+            prev = currentTime.get();
+            next = next > prev ? next : prev + 1;
+        } while (!currentTime.compareAndSet(prev, next));
+        return next;
     }
 }
