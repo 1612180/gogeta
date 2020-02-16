@@ -56,7 +56,7 @@ public class DetectBuz {
         if(!saveTransToCache(trans)){
             return;
         }
-        if(!QueueProcessDetect(trans)){
+        if(!processDetectObject(trans)){
             return;
         }
     }
@@ -86,7 +86,7 @@ public class DetectBuz {
          trans.setSavedToCache(false);
          return false;
     }
-    public boolean QueueProcessDetect(DetectTransEntity trans){
+    public boolean processDetectObject(DetectTransEntity trans){
         String topicDetectObject = queueConfig.getDetectObjectKafkaQueue();
         if(!queueUtils.sendMessage(trans,topicDetectObject)){
             return false;

@@ -34,7 +34,6 @@ public class DetectObjectHandler extends BaseHandler implements DetectObject {
     @Autowired
     DetectBuz detectBuz;
 
-
     private static final Logger logger = Logger.getLogger(DetectObjectHandler.class.getSimpleName());
 
 

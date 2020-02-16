@@ -21,8 +21,6 @@ public class DetectController {
 
     @PostMapping(path = "/yolo/images")
     public ResponseEntity<Object> detectObjectInImage(@RequestBody RequestDetectEntity requestDetectEntity){
-        detectObjectHandler.handleDetect(requestDetectEntity);
-        System.out.println(queueConfig.getDetectObjectKafkaQueue());
-        return  new ResponseEntity<>(requestDetectEntity, HttpStatus.OK);
+        return  new ResponseEntity<>(detectObjectHandler.handleDetect(requestDetectEntity), HttpStatus.OK);
     }
 }
