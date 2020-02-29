@@ -87,7 +87,7 @@ public class DetectBuz {
     }
 
     public boolean checkDuplicate(DetectTransEntity trans){
-        if(cacheClient.getTransFromCache(trans.getRequestUrl()) != null){
+        if(cacheClient.getTransFromCache(trans.getDetectTransId()) != null){
             trans.setTransStatus(DetectTransStatusEnum.IS_DETECTED_THIS_OBJECT.getStatus());
             return true;
         }

@@ -1,13 +1,11 @@
 package com.zalopay.gameplay.receptionist.config;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -40,10 +38,7 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
-    @Bean
-    public NewTopic detectObjectTopic(){
-        return TopicBuilder.name(queueConfig.getDetectObjectKafkaQueue())
-                .partitions(queueConfig.getNumberPartitionDetectObjectQueue()).build();
-    }
+
+
 
 }

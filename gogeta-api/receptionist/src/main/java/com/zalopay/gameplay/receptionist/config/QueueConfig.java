@@ -14,7 +14,7 @@ public class QueueConfig {
     @Value("${kafka.detectObjectQueue.groupId}")
     private String groupIdDetectObjectQueue;
 
-    @Value( "${kafka.topic.getStatusDetectObject}" )
+    @Value( "${kafka.topic.getStatusDetectQueue}" )
     private String getStatusDetectObjectQueue;
 
     @Value( "${kafka.topic.numberPartitionGetStatusDetect}" )

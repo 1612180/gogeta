@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class DetectObjectQueueListener {
+public class GetStatusDetectObjectListener {
 
     @Autowired
     ImageApiUtils imageApiUtils;
@@ -30,8 +30,15 @@ public class DetectObjectQueueListener {
     @Autowired
     QueueConfig queueConfig;
 
-    @KafkaListener(topics = "${kafka.topic.detectObjectKafkaQueue}")
+    @Value( "${service.image.max-retry}" )
+    private int MAX_RETRY_DETECT;
+
+    @Value( "${service.image.interval-time}" )
+    private int INTERVAL_TIME;
+
+    @KafkaListener(topics = "${kafka.topic.getStatusDetectQueue}",groupId = "${kafka.getStatusDetectQueue.groupId}")
     public void processDetectObject(DetectTransEntity trans){
+        System.out.println("on get status");
         if(trans == null || trans.getRequestUrl().equals("")){
             return;
         }
@@ -41,36 +48,40 @@ public class DetectObjectQueueListener {
             cacheClient.saveToCache(trans);
             return;
         }
+        System.out.println("response: " + response.getUrl());
         transferInfoResponseToTrans(trans,response);
         if(response.getStatus() == DetectTransStatusEnum.PROCESSING.getStatus()){
-            if(processGetStatusDetectObject(trans) == false){
-                trans.setTransStatus(DetectTransStatusEnum.SEND_MESSAGE_GET_STATUS_DETECT_OBJECT_FAIL.getStatus());
+            if(trans.getNumberRetryDetect() > MAX_RETRY_DETECT){
+                trans.setTransStatus(DetectTransStatusEnum.CALL_IMAGE_SERVICE_DETECT_MAX_RETRY.getStatus());
+                cacheClient.saveToCache(trans);
+                return;
+            }
+            trans.inCreaseNumberRetryDetect();
+            try {
+                TimeUnit.SECONDS.sleep(INTERVAL_TIME);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+            String topicGetStatus = queueConfig.getGetStatusDetectObjectQueue();
+            if(!queueUtils.sendMessage(trans,topicGetStatus)){
+                trans.setTransStatus(DetectTransStatusEnum.SEND_MESSAGE_DETECT_OBJECT_QUEUE_FAIL.getStatus());
                 cacheClient.saveToCache(trans);
                 return;
             }
         }
+
         if(response.getStatus() == DetectTransStatusEnum.SUCCESSFUL.getStatus()){
             trans.setTransStatus(DetectTransStatusEnum.SUCCESSFUL.getStatus());
             cacheClient.saveToCache(trans);
             return;
         }
     }
-
     private void transferInfoResponseToTrans(DetectTransEntity trans, DetectImageResponse response) {
         trans.setIdDetectImageResponse(response.getUuid());
         trans.setResponseUrl(response.getUrl());
+        trans.setTransStatus(response.getStatus());
     }
-
     private DetectImageResponse processDetectByCallImageService(DetectTransEntity trans){
-        DetectImageRequest request = new DetectImageRequest(trans);
-        return imageApiUtils.processDetectObject(request);
+        return imageApiUtils.getStatusDetectObject(trans.getIdDetectImageResponse());
     }
-    public boolean processGetStatusDetectObject(DetectTransEntity trans){
-        String topicGetStatusDetectObject = queueConfig.getGetStatusDetectObjectQueue();
-        if(!queueUtils.sendMessage(trans,topicGetStatusDetectObject)){
-            return false;
-        }
-        return true;
-    }
-
 }

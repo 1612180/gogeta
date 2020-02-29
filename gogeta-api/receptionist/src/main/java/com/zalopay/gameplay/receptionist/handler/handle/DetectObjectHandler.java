@@ -53,7 +53,6 @@ public class DetectObjectHandler extends BaseHandler implements DetectObject {
         return logDetectEntity.getResponseDetectEntity();
     }
 
-
     private void getInfoFromTrans(LogDetectEntity logDetectEntity, DetectTransEntity trans) {
         System.out.println(trans);
         logDetectEntity.getResponseDetectEntity().setTransId(trans.getDetectTransId());

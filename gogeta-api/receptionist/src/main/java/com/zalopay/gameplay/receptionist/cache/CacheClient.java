@@ -17,7 +17,7 @@ public class CacheClient {
 
     public boolean saveToCache(DetectTransEntity trans){
         try {
-            String urlKey = redisKeyUtils.getRequestAIKey(trans.getRequestUrl());
+            String urlKey = redisKeyUtils.getRequestAIKey(trans.getDetectTransId());
             RBucket<DetectTransEntity> bucket = redissonClient.getBucket(urlKey);
             bucket.set(trans);
             trans.setSavedToCache(true);
@@ -28,9 +28,9 @@ public class CacheClient {
         }
     }
 
-    public DetectTransEntity getTransFromCache(String url){
+    public DetectTransEntity getTransFromCache(long transId){
         try{
-            String transAiKey = redisKeyUtils.getRequestAIKey(url);
+            String transAiKey = redisKeyUtils.getRequestAIKey(transId);
             RBucket<DetectTransEntity> requestAI = redissonClient.getBucket(transAiKey);
             return requestAI.get();
         }catch (Exception e){

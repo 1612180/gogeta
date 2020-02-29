@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisKeyUtils {
 
-    public static String getRequestAIKey(String url)
+    public static String getRequestAIKey(long transId)
     {
         return new StringBuilder("AITRANS")
                 .append("|")
-                .append(url)
+                .append(transId)
                 .toString();
     }
 }

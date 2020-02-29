@@ -1,14 +1,14 @@
 package com.zalopay.gameplay.receptionist.controller;
 
 import com.zalopay.gameplay.receptionist.config.QueueConfig;
+import com.zalopay.gameplay.receptionist.handler.GetStatusDetectObject;
 import com.zalopay.gameplay.receptionist.handler.handle.DetectObjectHandler;
+import com.zalopay.gameplay.receptionist.handler.handle.GetStatusDetectObjectHandler;
 import com.zalopay.gameplay.receptionist.model.RequestDetectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class DetectController {
@@ -19,8 +19,15 @@ public class DetectController {
     @Autowired
     DetectObjectHandler detectObjectHandler;
 
-    @PostMapping(path = "/yolo/images")
-    public ResponseEntity<Object> detectObjectInImage(@RequestBody RequestDetectEntity requestDetectEntity){
-        return  new ResponseEntity<>(detectObjectHandler.handleDetect(requestDetectEntity), HttpStatus.OK);
+    @Autowired
+    GetStatusDetectObjectHandler getStatusDetectObjectHandler;
+
+    @PostMapping(path = "/images")
+    public ResponseEntity<Object> detectObjectInImage(@RequestBody RequestDetectEntity requestDetectEntity) {
+        return new ResponseEntity<>(detectObjectHandler.handleDetect(requestDetectEntity), HttpStatus.OK);
+    }
+    @GetMapping("/images/{transId}")
+    public ResponseEntity<Object> getStatusDetectObjectOnImage(@PathVariable Long transId) {
+        return new ResponseEntity<>(getStatusDetectObjectHandler.getStatusDetect(transId), HttpStatus.OK);
     }
 }
